@@ -1,4 +1,8 @@
 const production = process.env.NODE_ENV === 'production'
+const toNumber = (value: string | undefined): number | undefined => {
+  const result = parseInt(value, 10)
+  return Number.isSafeInteger(result) && result
+}
 
 function get<T>(name: string, fallback: T, options = { requireInProduction: false }): T | string {
   if (process.env[name]) {
@@ -66,6 +70,8 @@ export default {
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
+    dpsHomePageUrl: get('DPS_HOME_PAGE_URL', 'http://localhost:3001', requiredInProduction),
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  localMockData: get('LOCAL_MOCK_DATA', false),
 }
